@@ -16,17 +16,17 @@ class BuildUtils implements Serializable {
             case 'springboot':
                 steps.echo "☕ Detected Spring Boot app"
                 steps.bat "mvn clean package -DskipTests"
-                steps.bat "docker build -t ${appName}:latest ."
+                steps.bat "docker build -t ${appName}:latest ./php-nginx-helloworld"
                 break
 
             case 'nginx':
                 steps.echo "🌐 Detected Nginx app"
-                steps.bat "docker build -t ${appName}:latest ."
+                steps.bat "docker build -t ${appName}:latest ./php-nginx-helloworld"
                 break
 
             case 'php':
                 steps.echo "🐘 Detected PHP app"
-                steps.bat "docker build -t ${appName}:latest ."
+                steps.bat "docker build -t ${appName}:latest ./php-nginx-helloworld"
                 break
 
             default:
