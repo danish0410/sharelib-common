@@ -1,29 +1,38 @@
 package org.commonlib
 
 class BuildUtils implements Serializable {
-    def steps
+    def steps  // Injected Jenkins steps like echo, sh, etc.
 
     BuildUtils(steps) {
         this.steps = steps
     }
 
-    def build(Map config) {
-        def appType = config.appType?.toLowerCase()
-        switch(appType) {
+    def build(String appName, String appType, String port) {
+        steps.echo "🔧 Starting build for application: ${appName}"
+        steps.echo "📦 Application Type : ${appType}"
+        steps.echo "🚪 Default Port      : ${port}"
+
+        switch (appType?.toLowerCase()) {
             case 'springboot':
-                steps.echo "🔨 Building Spring Boot App: ${config.appName}"
-                steps.sh "mvn clean package -f ${config.pathToPom ?: '.'}/pom.xml"
+                steps.echo "☕ Detected Spring Boot app"
+                steps.sh "mvn clean package -DskipTests"
+                steps.sh "docker build -t ${appName}:latest ."
                 break
+
             case 'nginx':
-                steps.echo "📦 Building Nginx App: ${config.appName}"
-                steps.sh "docker build -t ${config.appName}:latest ${config.context ?: '.'}"
+                steps.echo "🌐 Detected Nginx app"
+                steps.sh "docker build -t ${appName}:latest ."
                 break
+
             case 'php':
-                steps.echo "🚀 Deploying PHP App: ${config.appName}"
-                steps.sh "cp -r ${config.source ?: '.'} /var/www/html/${config.appName}"
+                steps.echo "🐘 Detected PHP app"
+                steps.sh "docker build -t ${appName}:latest ."
                 break
+
             default:
-                steps.error "❌ Unsupported appType: ${appType}"
+                steps.error "❌ Unknown application type: ${appType}"
         }
+
+        steps.echo "✅ Build completed for ${appName} (${appType})"
     }
 }
