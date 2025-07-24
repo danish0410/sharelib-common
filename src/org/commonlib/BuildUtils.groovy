@@ -1,7 +1,7 @@
 package org.commonlib
 
 class BuildUtils implements Serializable {
-    def steps  // Injected Jenkins steps like echo, sh, etc.
+    def steps  // Injected Jenkins steps like echo, bat, etc.
 
     BuildUtils(steps) {
         this.steps = steps
@@ -15,18 +15,18 @@ class BuildUtils implements Serializable {
         switch (appType?.toLowerCase()) {
             case 'springboot':
                 steps.echo "☕ Detected Spring Boot app"
-                steps.sh "mvn clean package -DskipTests"
-                steps.sh "docker build -t ${appName}:latest ."
+                steps.bat "mvn clean package -DskipTests"
+                steps.bat "docker build -t ${appName}:latest ."
                 break
 
             case 'nginx':
                 steps.echo "🌐 Detected Nginx app"
-                steps.sh "docker build -t ${appName}:latest ."
+                steps.bat "docker build -t ${appName}:latest ."
                 break
 
             case 'php':
                 steps.echo "🐘 Detected PHP app"
-                steps.sh "docker build -t ${appName}:latest ."
+                steps.bat "docker build -t ${appName}:latest ."
                 break
 
             default:
